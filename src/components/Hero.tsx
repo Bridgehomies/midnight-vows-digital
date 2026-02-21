@@ -1,54 +1,28 @@
-import { useMemo } from "react";
 import { motion } from "framer-motion";
-import CitySkylline from "./CitySkylline";
 import { COUPLE_NAMES, HERO } from "@/constants";
-
-function generateStars(count: number) {
-  return Array.from({ length: count }, (_, i) => ({
-    id: i,
-    left: `${Math.random() * 100}%`,
-    top: `${Math.random() * 65}%`,
-    size: Math.random() * 2 + 1,
-    duration: 2 + Math.random() * 4,
-    delay: Math.random() * 5,
-  }));
-}
+import heroBg from "@/assets/hero-bg.jpg";
 
 const Hero = () => {
-  const stars = useMemo(() => generateStars(40), []);
-
   const scrollToRSVP = () => {
     document.getElementById("rsvp")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <section
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
-      style={{
-        background: "linear-gradient(to bottom, #1a0f2e 0%, #7b4a8f 70%, #0d0d18 100%)",
-      }}
-    >
-      {/* Stars */}
-      {stars.map((star) => (
-        <div
-          key={star.id}
-          className="absolute rounded-full bg-foreground animate-twinkle"
-          style={{
-            left: star.left,
-            top: star.top,
-            width: star.size,
-            height: star.size,
-            "--twinkle-duration": `${star.duration}s`,
-            "--twinkle-delay": `${star.delay}s`,
-            animationDelay: `${star.delay}s`,
-          } as React.CSSProperties}
+    <section className="relative min-h-screen flex items-end justify-center overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <img
+          src={heroBg}
+          alt="City skyline at twilight"
+          className="w-full h-full object-cover"
         />
-      ))}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+      </div>
 
       {/* Content */}
-      <div className="relative z-10 text-center px-6">
+      <div className="relative z-10 text-center px-6 pb-20 pt-40">
         <motion.p
-          className="font-heading text-gold tracking-[0.4em] text-sm mb-6"
+          className="font-heading text-gold tracking-[0.4em] text-xs sm:text-sm mb-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -57,27 +31,37 @@ const Hero = () => {
         </motion.p>
 
         <motion.h1
-          className="font-display italic text-warm-white font-light leading-tight mb-6"
-          style={{ fontSize: "clamp(2.5rem, 8vw, 5rem)" }}
+          className="font-display italic text-foreground font-light leading-none mb-2"
+          style={{ fontSize: "clamp(2.5rem, 10vw, 6rem)" }}
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
         >
-          {COUPLE_NAMES.partner1} & {COUPLE_NAMES.partner2}
+          {COUPLE_NAMES.partner1}
         </motion.h1>
 
         <motion.p
-          className="font-heading text-muted-gold tracking-[0.2em] text-base mb-10"
+          className="font-heading text-gold tracking-[0.5em] text-xs sm:text-sm my-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+        >
+          WEDS
+        </motion.p>
+
+        <motion.h1
+          className="font-display italic text-foreground font-light leading-none mb-8"
+          style={{ fontSize: "clamp(2.5rem, 10vw, 6rem)" }}
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
         >
-          {HERO.date}
-        </motion.p>
+          {COUPLE_NAMES.partner2}
+        </motion.h1>
 
         <motion.button
           onClick={scrollToRSVP}
-          className="font-heading tracking-[0.2em] text-sm px-8 py-3 border border-gold text-gold bg-transparent hover:bg-primary hover:text-primary-foreground transition-all duration-300 cursor-pointer"
+          className="font-heading tracking-[0.2em] text-xs sm:text-sm px-8 py-3 border border-gold text-gold bg-transparent hover:bg-primary hover:text-primary-foreground transition-all duration-300 cursor-pointer"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.9 }}
@@ -86,9 +70,6 @@ const Hero = () => {
           {HERO.cta}
         </motion.button>
       </div>
-
-      {/* City Skyline */}
-      <CitySkylline />
     </section>
   );
 };

@@ -1,22 +1,22 @@
 import Hero from "@/components/Hero";
-import Countdown from "@/components/Countdown";
-import OurStory from "@/components/OurStory";
+import InvitationSection from "@/components/InvitationSection";
 import EventDetails from "@/components/EventDetails";
+import MeetTheCouple from "@/components/MeetTheCouple";
 import Gallery from "@/components/Gallery";
 import RSVPForm from "@/components/RSVPForm";
-import Accommodations from "@/components/Accommodations";
+import ThingsToKnow from "@/components/ThingsToKnow";
 import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
-    <main className="bg-night-deep min-h-screen overflow-x-hidden">
+    <main className="bg-background min-h-screen overflow-x-hidden">
       <Hero />
-      <Countdown />
-      <OurStory />
+      <InvitationSection />
       <EventDetails />
+      <MeetTheCouple />
       <Gallery />
       <RSVPForm />
-      <Accommodations />
+      <ThingsToKnow />
       <Footer />
     </main>
   );
