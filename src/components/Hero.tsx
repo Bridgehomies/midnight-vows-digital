@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useRef } from "react";
 import { COUPLE_NAMES, HERO } from "@/constants";
 import heroBg from "@/assets/hero-bg.jpg";
@@ -8,8 +8,10 @@ const Hero = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll();
 
-  const carX = useTransform(scrollYProgress, [0, 0.15], ["20px", "calc(100vw - 300px)"]);
-  const carOpacity = useTransform(scrollYProgress, [0.12, 0.18], [1, 0]);
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 80, damping: 30, mass: 0.5 });
+
+  const carX = useTransform(smoothProgress, [0, 0.15], ["20px", "calc(100vw - 300px)"]);
+  const carOpacity = useTransform(smoothProgress, [0.12, 0.18], [1, 0]);
 
   const scrollToRSVP = () => {
     document.getElementById("rsvp")?.scrollIntoView({ behavior: "smooth" });
