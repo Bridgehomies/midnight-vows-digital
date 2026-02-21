@@ -2,65 +2,70 @@ import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useRef } from "react";
 import { COUPLE_NAMES, HERO } from "@/constants";
 import heroBg from "@/assets/hero-bg.jpg";
-import carSideView from "@/assets/car.png"; // Use a side-profile car image
+import carImg from "@/assets/car.png"; // Rear view of the Mercedes
 
 const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // 1. Track scroll progress of this specific section
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // 2. Smooth out the scroll progress to prevent "jittery" driving
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 50,
-    damping: 20,
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
   });
 
-  // 3. Map vertical scroll (0 to 1) to horizontal position (-20% to 110%)
-  // This makes the car drive across the entire width of the screen
-  const carX = useTransform(smoothProgress, [0, 1], ["-20vw", "105vw"]);
+  // ANIMATION LOGIC:
+  // x: Starts at 0 (center) and moves to 100vw (completely off-screen to the right)
+  const carX = useTransform(smoothProgress, [0, 0.8], ["0%", "100vw"]);
 
-  // Optional: Rotate the car slightly to simulate a "bumpy" road or incline
-  const carRotate = useTransform(smoothProgress, [0, 0.5, 1], [0, -2, 0]);
+  // scale & y: Subtle movement to make it look like it's pulling away
+  const carScale = useTransform(smoothProgress, [0, 0.5], [1, 0.9]);
+  const carOpacity = useTransform(smoothProgress, [0.4, 0.7], [1, 0]);
 
   return (
-    <div ref={containerRef} className="relative h-[300vh]">
-      {" "}
-      {/* The "Track" length */}
-      <div className="sticky top-0 h-screen overflow-hidden bg-[#fdfaf5]">
-        {/* Background Layer */}
+    <div ref={containerRef} className="relative h-[180vh]">
+      {/* Sticky wrapper keeps the scene visible while you scroll the 180vh track */}
+      <div className="sticky top-0 h-screen overflow-hidden">
+        {/* Background Palace */}
         <div className="absolute inset-0 z-0">
-          <img src={heroBg} alt="Palace" className="w-full h-full object-cover" />
+          <img src={heroBg} alt="Palace Background" className="w-full h-full object-cover" />
         </div>
 
-        {/* Text Layer (Behind the Car) */}
-        <div className="relative z-10 flex flex-col items-center justify-center h-full pb-20">
+        {/* Text Content */}
+        <div className="relative z-10 flex flex-col items-center justify-center h-full pb-32">
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="font-display italic text-white text-6xl md:text-9xl drop-shadow-md text-center"
+            style={{ opacity: carOpacity }}
+            className="font-display italic text-white text-6xl md:text-8xl text-center leading-none"
           >
             {COUPLE_NAMES.partner1} <br />
-            <span className="text-2xl block my-4 font-serif">weds</span>
+            <span className="text-xl md:text-2xl block my-4 tracking-[0.5em] font-serif uppercase">Weds</span>
             {COUPLE_NAMES.partner2}
           </motion.h1>
         </div>
 
-        {/* The Car - Moving Left to Right */}
+        {/* THE CAR: Starts centered, drives Right */}
         <motion.div
           style={{
             x: carX,
-            rotate: carRotate,
+            scale: carScale,
+            opacity: carOpacity,
+            left: "50%",
+            translateX: "-50%", // Keeps it centered initially
           }}
-          className="absolute bottom-[10%] z-20 w-[250px] sm:w-[400px] md:w-[500px]"
+          className="absolute bottom-[8%] z-20 w-[280px] sm:w-[400px] md:w-[550px]"
         >
-          <img src={carSideView} alt="Driving Car" className="w-full h-auto drop-shadow-2xl" />
-          {/* Subtle Shadow on the ground */}
-          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-[80%] h-4 bg-black/20 blur-xl rounded-[100%]" />
+          <img src={carImg} alt="Vintage Car" className="w-full h-auto drop-shadow-2xl" />
         </motion.div>
+
+        {/* Top UI buttons as seen in video */}
+        <div className="absolute top-6 right-6 z-30 flex gap-2">
+          <button className="bg-white text-black px-5 py-1.5 rounded-full text-xs font-bold shadow-md">Buy Now</button>
+          <button className="bg-black/80 text-white px-5 py-1.5 rounded-full text-xs font-bold">INR 3999</button>
+        </div>
       </div>
     </div>
   );
