@@ -2,7 +2,7 @@ import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useRef } from "react";
 import { COUPLE_NAMES, HERO } from "@/constants";
 import heroBg from "@/assets/hero-bg.jpg"; // The palace illustration
-import carImg from "@/assets/car-rear.png"; // Rear view of the Mercedes
+import carImg from "@/assets/car.png"; // Rear view of the Mercedes
 
 const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
