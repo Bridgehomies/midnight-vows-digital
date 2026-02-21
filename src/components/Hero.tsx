@@ -20,23 +20,18 @@ const Hero = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
       </div>
 
-      {/* Car animation — drives away into the distance */}
+      {/* Car animation — drives from right to left across the screen */}
       <motion.img
         src={carImg}
         alt="Vintage car driving away"
-        className="absolute bottom-[8%] left-1/2 z-20 w-[280px] sm:w-[360px] md:w-[420px] pointer-events-none"
-        style={{ originX: 0.5, originY: 1 }}
-        initial={{ x: "-50%", scale: 1, opacity: 1, y: 0 }}
-        animate={{
-          x: "-50%",
-          scale: 0.15,
-          opacity: 0,
-          y: -180,
-        }}
+        className="absolute bottom-[6%] z-20 w-[260px] sm:w-[340px] md:w-[420px] lg:w-[500px] pointer-events-none"
+        initial={{ x: "100vw", opacity: 0 }}
+        animate={{ x: "-100vw", opacity: 1 }}
         transition={{
-          duration: 4,
-          ease: [0.25, 0.1, 0.25, 1],
-          delay: 1.5,
+          duration: 6,
+          ease: "easeInOut",
+          delay: 0.5,
+          opacity: { duration: 0.5, delay: 0.5 },
         }}
       />
 
