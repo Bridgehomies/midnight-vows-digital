@@ -6,13 +6,10 @@ import carImg from "@/assets/car.png";
 
 const Hero = () => {
   const sectionRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"],
-  });
+  const { scrollYProgress } = useScroll();
 
-  const carX = useTransform(scrollYProgress, [0, 0.8], ["20px", "calc(100vw - 300px)"]);
-  const carOpacity = useTransform(scrollYProgress, [0.7, 1], [1, 0]);
+  const carX = useTransform(scrollYProgress, [0, 0.15], ["20px", "calc(100vw - 300px)"]);
+  const carOpacity = useTransform(scrollYProgress, [0.12, 0.18], [1, 0]);
 
   const scrollToRSVP = () => {
     document.getElementById("rsvp")?.scrollIntoView({ behavior: "smooth" });
