@@ -5,54 +5,73 @@ import heroBg from "@/assets/hero-bg.jpg";
 import carImg from "@/assets/car.png";
 
 const Hero = () => {
-  // This outer div is the tall scroll container (200vh = enough room to scroll
-  // through the car animation before the next section appears).
+  /**
+   * WHY THE ORIGINAL WAS BROKEN:
+   *
+   * useScroll() with no target tracks the ENTIRE page scroll.
+   * The hero was only min-h-screen (100vh) — so when the page loaded,
+   * scrollYProgress was already past 0.15 (the car's full range).
+   * The car sat frozen because it had nowhere to animate to.
+   *
+   * THE FIX — sticky scroll container pattern:
+   *   1. Outer div (200vh)  → gives the browser real scroll distance
+   *   2. Sticky inner div   → stays pinned while the user scrolls 200vh
+   *   3. useScroll({ target: containerRef }) → progress 0→1 within those 200vh
+   *
+   * ALSO: replaced `left` with Framer's `x` prop — GPU-accelerated transform,
+   * no layout recalculation, much smoother on low-end devices.
+   */
+
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Scope useScroll to THIS container so progress goes 0→1 as you scroll
-  // through the hero's own 200vh, not the entire page.
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // Smooth spring wrapper — keeps the car gliding rather than snapping
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 60,
-    damping: 25,
+    stiffness: 50,
+    damping: 20,
     mass: 0.5,
   });
 
-  // Car drives from left edge to right edge as user scrolls through [0 → 0.7]
-  // then fades out [0.7 → 1.0] so it disappears cleanly before the next section
-  const carX = useTransform(smoothProgress, [0, 0.7], ["-80px", "calc(100vw + 20px)"]);
-  const carOpacity = useTransform(smoothProgress, [0.65, 0.85], [1, 0]);
+  // Car: off-screen left → off-screen right over first 80% of scroll
+  const carX = useTransform(smoothProgress, [0, 0.8], ["-300px", "calc(100vw + 50px)"]);
+
+  // Car fades out between 55% → 80% scroll progress
+  const carOpacity = useTransform(smoothProgress, [0.55, 0.8], [1, 0]);
 
   const scrollToRSVP = () => {
     document.getElementById("rsvp")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    // Outer container: 200vh gives scroll room for the animation.
-    // "sticky" inner panel keeps the visual locked while scrolling through.
-    <div ref={containerRef} className="relative h-[200vh]">
-      {/* Sticky panel — this is what the user SEES while scrolling */}
+    // 200vh outer div — this is what the page scrolls through
+    <div ref={containerRef} style={{ height: "200vh" }}>
+      {/* Sticky panel — stays locked to viewport as user scrolls the 200vh */}
       <div className="sticky top-0 h-screen overflow-hidden flex items-end justify-center">
-        {/* Background Image */}
+        {/* Background */}
         <div className="absolute inset-0">
           <img src={heroBg} alt="City skyline at twilight" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
         </div>
 
-        {/* Car — animates left→right as the user scrolls the 200vh container */}
+        {/* Car
+            - `absolute` keeps it inside the sticky panel (not fixed to page)
+            - `x` prop (transform) is GPU-accelerated, unlike `left`
+            - starts at -300px (fully hidden left), drives to 100vw+50px (off right)
+            - bottom-[6%] sits it on the "ground" of the cityscape */}
         <motion.img
           src={carImg}
           alt="Vintage car driving away"
           className="absolute bottom-[6%] z-20 w-[260px] sm:w-[340px] md:w-[420px] lg:w-[500px] pointer-events-none"
-          style={{ left: carX, opacity: carOpacity }}
+          style={{
+            x: carX,
+            opacity: carOpacity,
+          }}
         />
 
-        {/* Text Content */}
+        {/* Content */}
         <div className="relative z-10 text-center px-6 pb-20 pt-40">
           <motion.p
             className="font-heading text-gold tracking-[0.4em] text-xs sm:text-sm mb-4"
