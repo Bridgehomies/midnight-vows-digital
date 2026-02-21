@@ -11,16 +11,17 @@ const Hero = () => {
     offset: ["start start", "end start"],
   });
 
-  const carX = useTransform(scrollYProgress, [0, 1], ["20px", "calc(100vw - 20px)"]);
+  const carX = useTransform(scrollYProgress, [0, 0.8], ["20px", "calc(100vw - 300px)"]);
+  const carOpacity = useTransform(scrollYProgress, [0.7, 1], [1, 0]);
 
   const scrollToRSVP = () => {
     document.getElementById("rsvp")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <section ref={sectionRef} className="relative min-h-screen flex items-end justify-center overflow-hidden">
+    <section ref={sectionRef} className="relative min-h-screen flex items-end justify-center overflow-visible">
       {/* Background Image */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 overflow-hidden">
         <img
           src={heroBg}
           alt="City skyline at twilight"
@@ -33,8 +34,8 @@ const Hero = () => {
       <motion.img
         src={carImg}
         alt="Vintage car driving away"
-        className="absolute bottom-[6%] z-20 w-[260px] sm:w-[340px] md:w-[420px] lg:w-[500px] pointer-events-none"
-        style={{ left: carX }}
+        className="fixed bottom-[6%] z-20 w-[260px] sm:w-[340px] md:w-[420px] lg:w-[500px] pointer-events-none"
+        style={{ left: carX, opacity: carOpacity }}
       />
 
       {/* Content */}
