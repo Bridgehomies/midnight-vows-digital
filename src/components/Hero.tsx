@@ -1,19 +1,24 @@
 import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import { COUPLE_NAMES, HERO } from "@/constants";
 import heroBg from "@/assets/hero-bg.jpg";
 import carImg from "@/assets/car.png";
 
 const Hero = () => {
-  const { scrollYProgress } = useScroll();
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
 
-  const carX = useTransform(scrollYProgress, [0, 0.8], ["20px", "calc(100vw - 300px)"]);
+  const carX = useTransform(scrollYProgress, [0, 1], ["20px", "calc(100vw - 20px)"]);
 
   const scrollToRSVP = () => {
     document.getElementById("rsvp")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <section className="relative min-h-screen flex items-end justify-center overflow-hidden">
+    <section ref={sectionRef} className="relative min-h-screen flex items-end justify-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
@@ -24,11 +29,11 @@ const Hero = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
       </div>
 
-      {/* Car — fixed, moves right as user scrolls the whole page */}
+      {/* Car — starts at left, moves right on scroll */}
       <motion.img
         src={carImg}
         alt="Vintage car driving away"
-        className="fixed bottom-[6%] z-50 w-[260px] sm:w-[340px] md:w-[420px] lg:w-[500px] pointer-events-none"
+        className="absolute bottom-[6%] z-20 w-[260px] sm:w-[340px] md:w-[420px] lg:w-[500px] pointer-events-none"
         style={{ left: carX }}
       />
 
